@@ -145,9 +145,9 @@ export default function QrScannerPage() {
               <Step>2</Step>
               <Step>3</Step>
             </Stepper>
-            <div className="flex w-full justify-center items-center mt-19">
+            <div className="flex  justify-center items-center mt-19">
               {activeStep === 0 && (
-                <div>
+                <div style={{ width: "100%" }}>
                   <div className="mb-5"></div>
                   {errorMessage && (
                     <Alert variant="outlined" color="red">
@@ -157,27 +157,32 @@ export default function QrScannerPage() {
                   <Typography className="text-center mt-5" variant="h6">
                     Scan The QR Code
                   </Typography>
-                  <Card className="w-full sm:max-w-md md:max-w-lg  lg:max-w-xl xl:max-w-2xl p-6 mt-4">
-                    {scanning ? (
-                      <>
-                        <div
-                          style={{ width: "100%", height: "100%" }}
-                          id="qr-code-reader"
-                        ></div>
-                        <Button
-                          onClick={stopScan}
-                          className="mt-4"
-                          style={{ width: "100%" }}
-                        >
-                          Stop Scanning
+                  <div className="flex justify-center items-center h-[calc(100vh-260px)]">
+                    <Card
+                      style={{ width: "100%" }}
+                      className="sm:max-w-md md:max-w-lg  lg:max-w-xl xl:max-w-2xl p-6 mt-4"
+                    >
+                      {scanning ? (
+                        <>
+                          <div
+                            style={{ width: "100%", height: "100%" }}
+                            id="qr-code-reader"
+                          ></div>
+                          <Button
+                            onClick={stopScan}
+                            className="mt-4"
+                            style={{ width: "100%" }}
+                          >
+                            Stop Scanning
+                          </Button>
+                        </>
+                      ) : (
+                        <Button onClick={startScan} style={{ width: "100%" }}>
+                          Start Scanning
                         </Button>
-                      </>
-                    ) : (
-                      <Button onClick={startScan} style={{ width: "100%" }}>
-                        Start Scanning
-                      </Button>
-                    )}
-                  </Card>
+                      )}
+                    </Card>
+                  </div>
                 </div>
               )}
               {activeStep === 1 && (
