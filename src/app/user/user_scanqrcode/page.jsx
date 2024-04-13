@@ -40,7 +40,6 @@ export default function QrScannerPage() {
       const qrCodeSuccessCallback = async (decodedText) => {
         const computerNumber = decodedText.split(" ")[0];
         const computerLab = decodedText.split(" ")[1];
-        setComputerLab(computerLab);
         try {
           const q = query(
             collection(db, "lobbies"),
@@ -160,18 +159,22 @@ export default function QrScannerPage() {
                   {scanning ? (
                     <>
                       <div id="qr-code-reader"></div>
-                      <Button
+                      <button
+                        className="btn btn-primary mt-3"
                         onClick={stopScan}
-                        className="mt-4"
-                        style={{ width: "100%" }}
+                        style={{ width: "50%" }}
                       >
                         Stop Scanning
-                      </Button>
+                      </button>
                     </>
                   ) : (
-                    <Button onClick={startScan} style={{ width: "100%" }}>
+                    <button
+                      className="btn btn-primary mt-3"
+                      onClick={startScan}
+                      style={{ width: "50%" }}
+                    >
                       Start Scanning
-                    </Button>
+                    </button>
                   )}
                 </div>
               )}
