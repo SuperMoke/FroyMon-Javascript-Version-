@@ -4,8 +4,6 @@ import NavbarComponent from "../navbar";
 import { Card, Typography } from "@material-tailwind/react";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { db } from "../../firebase";
-import { useRecoilValue } from "recoil";
-import { ComputerLabState } from "../../atoms";
 
 export default function ViewAttendance() {
   const TABLE_HEAD = [
@@ -18,14 +16,22 @@ export default function ViewAttendance() {
   ];
   const [students, setStudents] = useState([]);
   const [computerLab, setComputerLab] = useState(() => {
-    return localStorage.getItem("computerLab");
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("computerLab") || "";
+    }
+    return "";
   });
   const [classSection, setClassSection] = useState(() => {
-    return localStorage.getItem("classSection");
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("classSection") || "";
+    }
+    return "";
   });
 
   useEffect(() => {
-    localStorage.setItem("computerLab", computerLab);
+    if (typeof window !== "undefined") {
+      return localStorage.setItem("computerLab", computerLab);
+    }
   }, [computerLab]);
 
   useEffect(() => {
@@ -52,7 +58,6 @@ export default function ViewAttendance() {
           <h5 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white mb-8">
             View Attendance Form
           </h5>
-          <p>{computerLab}</p>
           <Card className="w-[1000px] h-[400px] overflow-scroll">
             <table className="w-full min-w-max table-auto text-left">
               <thead>

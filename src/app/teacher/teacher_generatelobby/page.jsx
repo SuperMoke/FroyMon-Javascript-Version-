@@ -92,13 +92,15 @@ export default function Generatelobby() {
       });
       setPin(pin);
       setFormSubmitted(true);
-      localStorage.removeItem("name");
-      localStorage.removeItem("email");
-      localStorage.setItem("classSection", formData.classSection);
-      localStorage.setItem("computerLab", formData.computerLab);
-      localStorage.setItem("formSubmitted", true);
-      localStorage.setItem("pin", pin);
-      setComputerLab(formData.computerLab);
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("name");
+        localStorage.removeItem("email");
+        localStorage.setItem("classSection", formData.classSection);
+        localStorage.setItem("computerLab", formData.computerLab);
+        localStorage.setItem("formSubmitted", true);
+        localStorage.setItem("pin", pin);
+        setComputerLab(formData.computerLab);
+      }
     } catch (error) {
       console.error("Error adding document: ", error);
     }
