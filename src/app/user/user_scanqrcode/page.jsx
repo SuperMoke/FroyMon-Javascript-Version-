@@ -61,7 +61,7 @@ export default function QrScannerPage() {
       html5QrCode = new Html5Qrcode("qr-code-reader");
       html5QrCode.start(
         { facingMode: "environment" },
-        { fps: 10, qrbox: 10 },
+        { fps: 10, qrbox: 250 },
         qrCodeSuccessCallback
       );
     }
@@ -133,7 +133,7 @@ export default function QrScannerPage() {
     <>
       <div className="bg-blue-gray-50 min-h-screen">
         <NavbarComponent />
-        <div className="flex flex-col items-center mt-10 h-[calc(100vh-64px)] bg-blue-gray-50 pt-16">
+        <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 bg-blue-gray-50 pt-16">
           <div className="w-full px-14 sm:px-20 py-4">
             <Stepper
               activeStep={activeStep}
