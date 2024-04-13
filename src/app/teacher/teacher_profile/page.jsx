@@ -27,7 +27,7 @@ import {
   updatePassword,
 } from "firebase/auth";
 
-export default function UserProfile() {
+export default function TeacherProfile() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [profilePhoto, setProfilePhoto] = useState(null);
@@ -135,7 +135,7 @@ export default function UserProfile() {
         <NavbarComponent />
         <div className="flex flex-col items-center h-[calc(100vh-64px)] bg-blue-gray-50 pt-16">
           <Typography variant="h2" className="mb-4 text-center">
-            User Profile
+            Teacher Profile
           </Typography>
           <div className="flex space-x-4">
             <Card className="w-96 p-8">

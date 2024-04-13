@@ -133,7 +133,7 @@ function NavList() {
         </Typography>
       </Link>
       <NavListMenu />
-      <Link href="/teacher">
+      <Link href="/teacher/teacher_profile">
         <Typography
           as="li"
           variant="small"
