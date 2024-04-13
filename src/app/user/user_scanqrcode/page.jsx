@@ -40,6 +40,7 @@ export default function QrScannerPage() {
       const qrCodeSuccessCallback = async (decodedText) => {
         const computerNumber = decodedText.split(" ")[0];
         const computerLab = decodedText.split(" ")[1];
+        setComputerLab(computerLab);
         try {
           const q = query(
             collection(db, "lobbies"),
@@ -61,7 +62,7 @@ export default function QrScannerPage() {
       html5QrCode = new Html5Qrcode("qr-code-reader");
       html5QrCode.start(
         { facingMode: "environment" },
-        { fps: 10, qrbox: 300 },
+        { fps: 10, qrbox: 250 },
         qrCodeSuccessCallback
       );
     }
@@ -156,24 +157,22 @@ export default function QrScannerPage() {
                   <Typography className="text-center mt-5" variant="h6">
                     Scan The QR Code
                   </Typography>
-                  <Card>
-                    {scanning ? (
-                      <>
-                        <div id="qr-code-reader"></div>
-                        <Button
-                          onClick={stopScan}
-                          className="mt-4"
-                          style={{ width: "100%" }}
-                        >
-                          Stop Scanning
-                        </Button>
-                      </>
-                    ) : (
-                      <Button onClick={startScan} style={{ width: "100%" }}>
-                        Start Scanning
+                  {scanning ? (
+                    <>
+                      <div id="qr-code-reader"></div>
+                      <Button
+                        onClick={stopScan}
+                        className="mt-4"
+                        style={{ width: "100%" }}
+                      >
+                        Stop Scanning
                       </Button>
-                    )}
-                  </Card>
+                    </>
+                  ) : (
+                    <Button onClick={startScan} style={{ width: "100%" }}>
+                      Start Scanning
+                    </Button>
+                  )}
                 </div>
               )}
               {activeStep === 1 && (
