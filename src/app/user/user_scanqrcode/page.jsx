@@ -160,7 +160,7 @@ export default function QrScannerPage() {
                   {scanning ? (
                     <>
                       <div
-                        style={{ width: "300px", height: "250px" }}
+                        style={{ width: "300px", height: "200px" }}
                         id="qr-code-reader"
                       ></div>
                       <Button onClick={stopScan} style={{ width: "100%" }}>
