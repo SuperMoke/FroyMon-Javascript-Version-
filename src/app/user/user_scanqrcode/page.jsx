@@ -133,7 +133,7 @@ export default function QrScannerPage() {
     <>
       <div className="bg-blue-gray-50 min-h-screen">
         <NavbarComponent />
-        <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 bg-blue-gray-50 pt-16">
+        <div className="flex flex-col items-center mt-10 h-[calc(100vh-64px)] bg-blue-gray-50 pt-16">
           <div className="w-full px-14 sm:px-20 py-4">
             <Stepper
               activeStep={activeStep}
@@ -156,26 +156,32 @@ export default function QrScannerPage() {
                   <Typography className="text-center mt-5" variant="h6">
                     Scan The QR Code
                   </Typography>
-                  {scanning ? (
-                    <>
-                      <div id="qr-code-reader"></div>
-                      <button
-                        className="btn btn-primary mt-3"
-                        onClick={stopScan}
-                        style={{ width: "50%" }}
-                      >
-                        Stop Scanning
-                      </button>
-                    </>
-                  ) : (
-                    <button
-                      className="btn btn-primary mt-3"
-                      onClick={startScan}
-                      style={{ width: "50%" }}
+                  <div className="flex justify-center items-center h-[calc(100vh-260px)]">
+                    <Card
+                      style={{ width: "100%" }}
+                      className="sm:max-w-md md:max-w-lg  lg:max-w-xl xl:max-w-2xl p-6 mt-4"
                     >
-                      Start Scanning
-                    </button>
-                  )}
+                      {scanning ? (
+                        <>
+                          <div
+                            style={{ width: "100%", height: "100%" }}
+                            id="qr-code-reader"
+                          ></div>
+                          <Button
+                            onClick={stopScan}
+                            className="mt-4"
+                            style={{ width: "100%" }}
+                          >
+                            Stop Scanning
+                          </Button>
+                        </>
+                      ) : (
+                        <Button onClick={startScan} style={{ width: "100%" }}>
+                          Start Scanning
+                        </Button>
+                      )}
+                    </Card>
+                  </div>
                 </div>
               )}
               {activeStep === 1 && (
