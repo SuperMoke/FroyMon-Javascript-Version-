@@ -61,10 +61,7 @@ export default function QrScannerPage() {
       html5QrCode = new Html5Qrcode("qr-code-reader");
       html5QrCode.start(
         { facingMode: "environment" },
-        {
-          fps: 10,
-          qrbox: Math.min(window.innerHeight, window.innerWidth) * 0.8,
-        },
+        { fps: 10, qrbox: 10 },
         qrCodeSuccessCallback
       );
     }
