@@ -28,27 +28,13 @@ function generateRandomPin() {
 export default function Generatelobby() {
   const [students, setStudents] = useState([]);
   const [formData, setFormData] = useState({
-    name:
-      typeof window !== "undefined" ? localStorage.getItem("name") || "" : "",
-    email:
-      typeof window !== "undefined" ? localStorage.getItem("email") || "" : "",
-    classSection:
-      typeof window !== "undefined"
-        ? localStorage.getItem("classSection") || ""
-        : "",
-    computerLab:
-      typeof window !== "undefined"
-        ? localStorage.getItem("computerLab") || ""
-        : "",
+    name: "",
+    email: "",
+    classSection: "",
+    computerLab: "",
   });
-  const [formSubmitted, setFormSubmitted] = useState(
-    typeof window !== "undefined"
-      ? localStorage.getItem("formSubmitted") === "true"
-      : false
-  );
-  const [pin, setPin] = useState(
-    typeof window !== "undefined" ? localStorage.getItem("pin") || null : null
-  );
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [pin, setPin] = useState(null);
 
   const [computerLab, setComputerLab] = useRecoilState(ComputerLabState);
 
@@ -61,22 +47,40 @@ export default function Generatelobby() {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const studentsData = [];
-      const q = query(
-        collection(db, "studententries"),
-        where("labid", "==", computerLab)
-      );
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-        studentsData.push(doc.data());
+    if (typeof window !== "undefined") {
+      const storedName = localStorage.getItem("name");
+      const storedEmail = localStorage.getItem("email");
+      const storedClassSection = localStorage.getItem("classSection");
+      const storedComputerLab = localStorage.getItem("computerLab");
+      setFormData({
+        name: storedName || "",
+        email: storedEmail || "",
+        classSection: storedClassSection || "",
+        computerLab: storedComputerLab || "",
       });
-      setStudents(studentsData);
-    };
-    if (computerLab) {
+      setComputerLab(storedComputerLab);
+      const storedFormSubmitted = localStorage.getItem("formSubmitted");
+      if (storedFormSubmitted === "true") {
+        setFormSubmitted(true);
+      }
+      const storedPin = localStorage.getItem("pin");
+      setPin(storedPin);
       fetchData();
     }
   }, [computerLab]);
+
+  const fetchData = async () => {
+    const studentsData = [];
+    const q = query(
+      collection(db, "studententries"),
+      where("computerLab", "==", computerLab)
+    );
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      studentsData.push(doc.data());
+    });
+    setStudents(studentsData);
+  };
 
   const saveFormDataToFirestore = async () => {
     const pin = generateRandomPin();
@@ -84,14 +88,14 @@ export default function Generatelobby() {
       const docRef = await addDoc(collection(db, "lobbies"), {
         ...formData,
         pin: pin,
-        computerLab: computerLab,
+        computerLab: formData.computerLab,
       });
       setPin(pin);
       setFormSubmitted(true);
       localStorage.removeItem("name");
       localStorage.removeItem("email");
       localStorage.setItem("classSection", formData.classSection);
-      localStorage.setItem("computerLab", computerLab);
+      localStorage.setItem("computerLab", formData.computerLab);
       localStorage.setItem("formSubmitted", true);
       localStorage.setItem("pin", pin);
       setComputerLab(formData.computerLab);
@@ -192,6 +196,12 @@ export default function Generatelobby() {
                 <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                   {pin}
                 </h5>
+                <h5 className="tracking-tight text-gray-900 dark:text-white">
+                  Computer Laboratory:
+                </h5>
+                <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                  {computerLab}
+                </h5>
                 <Button onClick={endSession}>End Session</Button>
               </Card>
 
@@ -208,10 +218,10 @@ export default function Generatelobby() {
                       <Avatar></Avatar>
                       <div className="mr-5 ml-5">
                         <h2 className="tracking-tight text-gray-900 dark:text-white">
-                          Name: {student.name}
+                          Name: {student.studentName}
                         </h2>
                         <h2 className="tracking-tight text-gray-900 dark:text-white">
-                          Computer Number: {student.computernumber}
+                          Computer Number: {student.computerNumber}
                         </h2>
                       </div>
                     </Card>

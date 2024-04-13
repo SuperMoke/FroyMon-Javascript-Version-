@@ -15,6 +15,7 @@ import { collection, query, getDocs, where, addDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function PickClassroom() {
   const [classrooms, setClassrooms] = useState([]);
@@ -32,6 +33,7 @@ export default function PickClassroom() {
     computerNumber: "",
     computerStatus: "",
   });
+  const router = useRouter();
 
   useEffect(() => {
     const fetchClassrooms = async () => {
@@ -85,6 +87,14 @@ export default function PickClassroom() {
 
   const handleSubmit = async () => {
     try {
+      const currentTime = new Date();
+      let hours = currentTime.getHours();
+      const minutes = currentTime.getMinutes();
+      const ampm = hours >= 12 ? "PM" : "AM";
+      hours = hours % 12;
+      hours = hours ? hours : 12;
+      const formattedTime = `${hours}:${minutes} ${ampm}`;
+
       await addDoc(collection(db, "studententries"), formData);
       setFormData({
         studentName: "",
@@ -93,11 +103,29 @@ export default function PickClassroom() {
         computerLab: "",
         computerNumber: "",
         computerStatus: "",
+        timeIn: formattedTime,
       });
-      setActiveStep(3);
     } catch (error) {
       console.error("Error adding document: ", error);
-      // Handle error
+    }
+  };
+
+  const handleEndSession = async () => {
+    try {
+      const currentTime = new Date();
+      let hours = currentTime.getHours();
+      const minutes = currentTime.getMinutes();
+      const ampm = hours >= 12 ? "PM" : "AM";
+      hours = hours % 12;
+      hours = hours ? hours : 12;
+      const formattedTime = `${hours}:${minutes} ${ampm}`;
+      await addDoc(collection(db, "studententries"), {
+        ...formData,
+        timeOut: formattedTime,
+      });
+      router.push("/user");
+    } catch (error) {
+      console.error("Error adding document: ", error);
     }
   };
 
@@ -290,7 +318,7 @@ export default function PickClassroom() {
                       I recommend that you stay on this page until your class
                       session has ended so that your time out will be recorded.
                     </h2>
-                    <Button className="mt-3" onClick={() => setActiveStep(2)}>
+                    <Button className="mt-3" onClick={handleEndSession}>
                       End of Session
                     </Button>
                   </Card>

@@ -37,6 +37,14 @@ export default function QrScannerPage() {
 
   const handleSubmit = async () => {
     try {
+      const currentTime = new Date();
+      let hours = currentTime.getHours();
+      const minutes = currentTime.getMinutes();
+      const ampm = hours >= 12 ? "PM" : "AM";
+      hours = hours % 12;
+      hours = hours ? hours : 12;
+      const formattedTime = `${hours}:${minutes} ${ampm}`;
+
       await addDoc(collection(db, "studententries"), {
         studentName: formData.studentName,
         studentID: formData.studentID,
@@ -44,8 +52,28 @@ export default function QrScannerPage() {
         computerStatus: formData.computerStatus,
         computerNumber: data.split(" ")[0],
         computerLab: data.split(" ")[1],
+        timeIn: formattedTime,
       });
       setActiveStep(2);
+    } catch (error) {
+      console.error("Error adding document: ", error);
+    }
+  };
+
+  const handleEndSession = async () => {
+    try {
+      const currentTime = new Date();
+      let hours = currentTime.getHours();
+      const minutes = currentTime.getMinutes();
+      const ampm = hours >= 12 ? "PM" : "AM";
+      hours = hours % 12;
+      hours = hours ? hours : 12;
+      const formattedTime = `${hours}:${minutes} ${ampm}`;
+      await addDoc(collection(db, "studententries"), {
+        ...formData,
+        timeOut: formattedTime,
+      });
+      router.push("/user");
     } catch (error) {
       console.error("Error adding document: ", error);
     }
@@ -165,7 +193,7 @@ export default function QrScannerPage() {
                       I recommend that you stay on this page until your class
                       session has ended so that your time out will be recorded.
                     </h2>
-                    <Button className="mt-3" onClick={() => setActiveStep(2)}>
+                    <Button className="mt-3" onClick={handleEndSession}>
                       End of Session
                     </Button>
                   </Card>

@@ -8,14 +8,30 @@ import { useRecoilValue } from "recoil";
 import { ComputerLabState } from "../../atoms";
 
 export default function ViewAttendance() {
-  const TABLE_HEAD = ["Student Name", "Email", "Class Section", "Computer Lab"];
+  const TABLE_HEAD = [
+    "Student Name",
+    "Email",
+    "Class Section",
+    "Computer Lab",
+    "Time In",
+    "Time Out",
+  ];
   const [students, setStudents] = useState([]);
-  const computerLab = useRecoilValue(ComputerLabState);
+  const [computerLab, setComputerLab] = useState(() => {
+    return localStorage.getItem("computerLab");
+  });
+  const [classSection, setClassSection] = useState(() => {
+    return localStorage.getItem("classSection");
+  });
+
+  useEffect(() => {
+    localStorage.setItem("computerLab", computerLab);
+  }, [computerLab]);
 
   useEffect(() => {
     const q = query(
       collection(db, "studententries"),
-      where("labid", "==", computerLab)
+      where("computerLab", "==", computerLab)
     );
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const studentsData = [];
@@ -66,7 +82,7 @@ export default function ViewAttendance() {
                         color="blue-gray"
                         className="font-normal"
                       >
-                        {student.name}
+                        {student.studentName}
                       </Typography>
                     </td>
                     <td className="p-4">
@@ -75,7 +91,7 @@ export default function ViewAttendance() {
                         color="blue-gray"
                         className="font-normal"
                       >
-                        {student.email}
+                        {student.ccaEmail}
                       </Typography>
                     </td>
                     <td className="p-4">
@@ -84,7 +100,7 @@ export default function ViewAttendance() {
                         color="blue-gray"
                         className="font-normal"
                       >
-                        {student.section}
+                        {classSection}
                       </Typography>
                     </td>
                     <td className="p-4">
@@ -93,7 +109,25 @@ export default function ViewAttendance() {
                         color="blue-gray"
                         className="font-normal"
                       >
-                        {student.labid}
+                        {student.computerLab}
+                      </Typography>
+                    </td>
+                    <td className="p-4">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                      >
+                        {student.timeIn}
+                      </Typography>
+                    </td>
+                    <td className="p-4">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                      >
+                        {student.timeOut}
                       </Typography>
                     </td>
                   </tr>
