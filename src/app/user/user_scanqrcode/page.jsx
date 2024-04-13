@@ -145,7 +145,7 @@ export default function QrScannerPage() {
               <Step>2</Step>
               <Step>3</Step>
             </Stepper>
-            <div className="flex justify-center items-center mt-19">
+            <div className="flex w-full justify-center items-center mt-19">
               {activeStep === 0 && (
                 <div>
                   <div className="mb-5"></div>
@@ -157,7 +157,7 @@ export default function QrScannerPage() {
                   <Typography className="text-center mt-5" variant="h6">
                     Scan The QR Code
                   </Typography>
-                  <Card className="w-full max-w-md p-6 mt-4">
+                  <Card className="w-full sm:max-w-md md:max-w-lg  lg:max-w-xl xl:max-w-2xl p-6 mt-4">
                     {scanning ? (
                       <>
                         <div
