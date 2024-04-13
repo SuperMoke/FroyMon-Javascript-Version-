@@ -94,17 +94,11 @@ export default function PickClassroom() {
       hours = hours % 12;
       hours = hours ? hours : 12;
       const formattedTime = `${hours}:${minutes} ${ampm}`;
-
-      await addDoc(collection(db, "studententries"), formData);
-      setFormData({
-        studentName: "",
-        studentID: "",
-        ccaEmail: "",
-        computerLab: "",
-        computerNumber: "",
-        computerStatus: "",
+      await addDoc(collection(db, "studententries"), {
+        ...formData,
         timeIn: formattedTime,
       });
+      setActiveStep(3);
     } catch (error) {
       console.error("Error adding document: ", error);
     }
