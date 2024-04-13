@@ -22,6 +22,7 @@ const createConfig = (props) => {
 
 const Html5QrcodePlugin = (props) => {
   useEffect(() => {
+    // when component mounts
     const config = createConfig(props);
     const verbose = props.verbose === true;
 
@@ -45,7 +46,7 @@ const Html5QrcodePlugin = (props) => {
     };
   }, []);
 
-  return <div id={qrcodeRegionId} />;
+  return <div id={qrcodeRegionId} style={{ color: "black" }} />;
 };
 
 export default Html5QrcodePlugin;
