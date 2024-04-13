@@ -124,7 +124,7 @@ export default function QrScannerPage() {
                   <Typography className="text-center mt-5" variant="h6">
                     Scan The QR Code
                   </Typography>
-                  <div className="w-full max-w-sm flex justify-center p-5 mt-5">
+                  <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                     <Html5QrcodePlugin
                       fps={10}
                       qrbox={250}
