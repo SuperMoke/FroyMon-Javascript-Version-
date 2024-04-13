@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import NavbarComponent from "../navbar";
 import {
   Card,
@@ -12,18 +12,20 @@ import {
   Option,
   Alert,
 } from "@material-tailwind/react";
-import Html5QrcodePlugin from "../../Html5QrcodeScanner";
 import { faQrcode, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import { addDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../firebase";
+import { Html5Qrcode } from "html5-qrcode";
 
 export default function QrScannerPage() {
   const [data, setData] = useState("No result");
+  const [result, setResult] = useState("");
   const [activeStep, setActiveStep] = React.useState(0);
   const [isLastStep, setIsLastStep] = React.useState(false);
   const [isFirstStep, setIsFirstStep] = React.useState(false);
+  const [scanning, setScanning] = useState(false);
   const [formData, setFormData] = useState({
     studentName: "",
     studentID: "",
@@ -31,6 +33,58 @@ export default function QrScannerPage() {
     computerStatus: "",
   });
   const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    let html5QrCode;
+
+    if (scanning) {
+      const qrCodeSuccessCallback = async (decodedText) => {
+        const computerNumber = decodedText.split(" ")[0];
+        const computerLab = decodedText.split(" ")[1];
+        try {
+          const q = query(
+            collection(db, "lobbies"),
+            where("computerLab", "==", computerLab)
+          );
+          const querySnapshot = await getDocs(q);
+          if (!querySnapshot.empty) {
+            setActiveStep(1);
+          } else {
+            setErrorMessage("Computer Lab not found");
+          }
+        } catch (error) {
+          console.error("Error querying Firestore: ", error);
+          setErrorMessage("An error occurred while processing your request");
+        }
+        setScanning(false);
+      };
+
+      html5QrCode = new Html5Qrcode("qr-code-reader");
+      html5QrCode.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 250 },
+        qrCodeSuccessCallback
+      );
+    }
+
+    return () => {
+      if (html5QrCode) {
+        html5QrCode
+          .stop()
+          .then((ignore) => {})
+          .catch((err) => console.error(err));
+      }
+    };
+  }, [scanning]);
+
+  const startScan = () => {
+    setResult("");
+    setScanning(true);
+  };
+
+  const stopScan = () => {
+    setScanning(false);
+  };
 
   const handleRead = async (decodedText, decodedResult) => {
     setData(decodedText);
@@ -125,12 +179,26 @@ export default function QrScannerPage() {
                     Scan The QR Code
                   </Typography>
                   <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                    <Html5QrcodePlugin
-                      fps={10}
-                      qrbox={250}
-                      disableFlip={false}
-                      qrCodeSuccessCallback={handleRead}
-                    />
+                    {scanning ? (
+                      <>
+                        <div id="qr-code-reader"></div>
+                        <button
+                          className="btn btn-primary mt-3"
+                          onClick={stopScan}
+                          style={{ width: "50%" }}
+                        >
+                          Stop Scanning
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        className="btn btn-primary mt-3"
+                        onClick={startScan}
+                        style={{ width: "50%" }}
+                      >
+                        Start Scanning
+                      </button>
+                    )}
                   </div>
                 </div>
               )}

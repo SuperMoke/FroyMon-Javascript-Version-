@@ -21,6 +21,7 @@
     "next": "14.1.4",
     "react": "^18",
     "react-dom": "^18",
+    "react-html5-qrcode-reader": "^1.1.1",
     "recoil": "^0.7.7"
   },
   "devDependencies": {
