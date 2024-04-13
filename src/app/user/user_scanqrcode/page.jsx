@@ -124,14 +124,14 @@ export default function QrScannerPage() {
                   <Typography className="text-center mt-5" variant="h6">
                     Scan The QR Code
                   </Typography>
-                  <Card className="w-full max-w-sm flex justify-center p-5 mt-5">
+                  <div className="w-full max-w-sm flex justify-center p-5 mt-5">
                     <Html5QrcodePlugin
                       fps={10}
                       qrbox={250}
                       disableFlip={false}
                       qrCodeSuccessCallback={handleRead}
                     />
-                  </Card>
+                  </div>
                 </div>
               )}
               {activeStep === 1 && (
