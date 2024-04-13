@@ -157,11 +157,11 @@ export default function QrScannerPage() {
                   <Typography className="text-center mt-5" variant="h6">
                     Scan The QR Code
                   </Typography>
-                  <Card className="w-full">
+                  <Card className="w-full flex flex-col justify-center items-center space-y-5">
                     {scanning ? (
                       <>
                         <div
-                          style={{ maxWidth: "90%", maxHeight: "70vh" }}
+                          style={{ width: "100%", height: "250px" }}
                           id="qr-code-reader"
                         ></div>
                         <Button onClick={stopScan} style={{ width: "100%" }}>
