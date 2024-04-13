@@ -157,7 +157,7 @@ export default function QrScannerPage() {
                     Scan The QR Code
                   </Typography>
                   {scanning ? (
-                    <>
+                    <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                       <div id="qr-code-reader"></div>
                       <button
                         className="btn btn-primary mt-3"
@@ -166,7 +166,7 @@ export default function QrScannerPage() {
                       >
                         Stop Scanning
                       </button>
-                    </>
+                    </div>
                   ) : (
                     <button
                       className="btn btn-primary mt-3"
