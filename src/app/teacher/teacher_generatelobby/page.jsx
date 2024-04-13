@@ -28,15 +28,28 @@ function generateRandomPin() {
 export default function Generatelobby() {
   const [students, setStudents] = useState([]);
   const [formData, setFormData] = useState({
-    name: localStorage.getItem("name") || "",
-    email: localStorage.getItem("email") || "",
-    classSection: localStorage.getItem("classSection") || "",
-    computerLab: localStorage.getItem("computerLab") || "",
+    name:
+      typeof window !== "undefined" ? localStorage.getItem("name") || "" : "",
+    email:
+      typeof window !== "undefined" ? localStorage.getItem("email") || "" : "",
+    classSection:
+      typeof window !== "undefined"
+        ? localStorage.getItem("classSection") || ""
+        : "",
+    computerLab:
+      typeof window !== "undefined"
+        ? localStorage.getItem("computerLab") || ""
+        : "",
   });
   const [formSubmitted, setFormSubmitted] = useState(
-    localStorage.getItem("formSubmitted") === "true"
+    typeof window !== "undefined"
+      ? localStorage.getItem("formSubmitted") === "true"
+      : false
   );
-  const [pin, setPin] = useState(localStorage.getItem("pin") || null);
+  const [pin, setPin] = useState(
+    typeof window !== "undefined" ? localStorage.getItem("pin") || null : null
+  );
+
   const [computerLab, setComputerLab] = useRecoilState(ComputerLabState);
 
   const handleInputChange = (e) => {
