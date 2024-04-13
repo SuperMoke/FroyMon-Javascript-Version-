@@ -159,10 +159,7 @@ export default function QrScannerPage() {
                   <Card style={{ width: "100%" }}>
                     {scanning ? (
                       <>
-                        <div
-                          style={{ width: "100%", height: "100%" }}
-                          id="qr-code-reader"
-                        ></div>
+                        <div id="qr-code-reader"></div>
                         <Button
                           onClick={stopScan}
                           className="mt-4"
