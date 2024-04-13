@@ -36,7 +36,6 @@ export default function QrScannerPage() {
 
   useEffect(() => {
     let html5QrCode;
-
     if (scanning) {
       const qrCodeSuccessCallback = async (decodedText) => {
         const computerNumber = decodedText.split(" ")[0];
@@ -157,11 +156,8 @@ export default function QrScannerPage() {
                   <Typography className="text-center mt-5" variant="h6">
                     Scan The QR Code
                   </Typography>
-                  <div className="flex justify-center items-center h-[calc(100vh-260px)]">
-                    <Card
-                      style={{ width: "100%" }}
-                      className="sm:max-w-md md:max-w-lg  lg:max-w-xl xl:max-w-2xl p-6 mt-4"
-                    >
+                  <div className="flex justify-center items-center">
+                    <Card style={{ width: "100%" }}>
                       {scanning ? (
                         <>
                           <div
