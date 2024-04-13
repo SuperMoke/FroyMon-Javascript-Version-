@@ -157,35 +157,23 @@ export default function QrScannerPage() {
                   <Typography className="text-center mt-5" variant="h6">
                     Scan The QR Code
                   </Typography>
-                  <div style={{ position: "relative" }}>
-                    <div
-                      style={{ width: "300px", height: "200px" }}
-                      id="qr-code-reader"
-                    ></div>
-                    {scanning && (
-                      <Button
-                        onClick={stopScan}
-                        style={{
-                          position: "absolute",
-                          bottom: "-80px",
-                          left: "50%",
-                          transform: "translateX(-50%)",
-                          width: "100%",
-                          zIndex: 1,
-                        }}
-                      >
+                  {scanning ? (
+                    <>
+                      <div
+                        style={{ width: "300px", height: "200px" }}
+                        id="qr-code-reader"
+                      ></div>
+                      <Button onClick={stopScan} style={{ width: "100%" }}>
                         Stop Scanning
                       </Button>
-                    )}
-                  </div>
-                  {!scanning && (
+                    </>
+                  ) : (
                     <Button onClick={startScan} style={{ width: "100%" }}>
                       Start Scanning
                     </Button>
                   )}
                 </div>
               )}
-
               {activeStep === 1 && (
                 <div className="w-full">
                   <Typography className="text-center mt-5" variant="h6">
