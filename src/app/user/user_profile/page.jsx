@@ -114,12 +114,15 @@ export default function UserProfile() {
       );
       await reauthenticateWithCredential(user, Emailcredential);
       console.log("Credential:", Emailcredential);
+
       if (newPassword !== confirmPassword) {
         console.error("New password and confirm password do not match");
         return;
       }
       await updatePassword(user, newPassword).then(() => {
-        console.log("Password updated successfully");
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
       });
     } catch (error) {
       console.error("Error updating password:", error);
