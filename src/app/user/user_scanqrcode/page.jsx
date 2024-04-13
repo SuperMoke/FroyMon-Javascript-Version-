@@ -10,12 +10,13 @@ import {
   Typography,
   Select,
   Option,
+  Alert,
 } from "@material-tailwind/react";
 import Html5QrcodePlugin from "../../Html5QrcodeScanner";
 import { faQrcode, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../firebase";
 
 export default function QrScannerPage() {
@@ -29,10 +30,27 @@ export default function QrScannerPage() {
     ccaEmail: "",
     computerStatus: "",
   });
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleRead = (decodedText, decodedResult) => {
+  const handleRead = async (decodedText, decodedResult) => {
     setData(decodedText);
-    setActiveStep(1);
+    const computerNumber = decodedText.split(" ")[0];
+    const computerLab = decodedText.split(" ")[1];
+    try {
+      const q = query(
+        collection(db, "lobbies"),
+        where("computerLab", "==", computerLab)
+      );
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        setActiveStep(1);
+      } else {
+        setErrorMessage("Computer Lab not found");
+      }
+    } catch (error) {
+      console.error("Error querying Firestore: ", error);
+      setErrorMessage("An error occurred while processing your request");
+    }
   };
 
   const handleSubmit = async () => {
@@ -97,6 +115,12 @@ export default function QrScannerPage() {
             <div className="flex justify-center items-center mt-19">
               {activeStep === 0 && (
                 <div>
+                  <div className="mb-5"></div>
+                  {errorMessage && (
+                    <Alert variant="outlined" color="red">
+                      <span className="text-center">{errorMessage}</span>
+                    </Alert>
+                  )}
                   <Typography className="text-center mt-5" variant="h6">
                     Scan The QR Code
                   </Typography>
