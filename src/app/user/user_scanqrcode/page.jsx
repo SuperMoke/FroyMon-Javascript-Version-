@@ -62,7 +62,7 @@ export default function QrScannerPage() {
       html5QrCode = new Html5Qrcode("qr-code-reader");
       html5QrCode.start(
         { facingMode: "environment" },
-        { fps: 10, qrbox: 300 },
+        { fps: 10, qrbox: 250 },
         qrCodeSuccessCallback
       );
     }
@@ -157,23 +157,35 @@ export default function QrScannerPage() {
                   <Typography className="text-center mt-5" variant="h6">
                     Scan The QR Code
                   </Typography>
-                  {scanning ? (
-                    <>
-                      <div
-                        style={{ width: "300px", height: "200px" }}
-                        id="qr-code-reader"
-                      ></div>
-                      <Button onClick={stopScan} style={{ width: "100%" }}>
+                  <div style={{ position: "relative" }}>
+                    <div
+                      style={{ width: "300px", height: "200px" }}
+                      id="qr-code-reader"
+                    ></div>
+                    {scanning && (
+                      <Button
+                        onClick={stopScan}
+                        style={{
+                          position: "absolute",
+                          bottom: "-80px",
+                          left: "50%",
+                          transform: "translateX(-50%)",
+                          width: "100%",
+                          zIndex: 1,
+                        }}
+                      >
                         Stop Scanning
                       </Button>
-                    </>
-                  ) : (
+                    )}
+                  </div>
+                  {!scanning && (
                     <Button onClick={startScan} style={{ width: "100%" }}>
                       Start Scanning
                     </Button>
                   )}
                 </div>
               )}
+
               {activeStep === 1 && (
                 <div className="w-full">
                   <Typography className="text-center mt-5" variant="h6">
