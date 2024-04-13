@@ -61,7 +61,7 @@ export default function QrScannerPage() {
       html5QrCode = new Html5Qrcode("qr-code-reader");
       html5QrCode.start(
         { facingMode: "environment" },
-        { fps: 10, qrbox: 250 },
+        { fps: 10, qrbox: 300 },
         qrCodeSuccessCallback
       );
     }
@@ -156,7 +156,7 @@ export default function QrScannerPage() {
                   <Typography className="text-center mt-5" variant="h6">
                     Scan The QR Code
                   </Typography>
-                  <Card style={{ width: "100%" }}>
+                  <Card>
                     {scanning ? (
                       <>
                         <div id="qr-code-reader"></div>
