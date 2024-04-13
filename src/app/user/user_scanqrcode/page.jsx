@@ -62,7 +62,7 @@ export default function QrScannerPage() {
       html5QrCode = new Html5Qrcode("qr-code-reader");
       html5QrCode.start(
         { facingMode: "environment" },
-        { fps: 10, qrbox: 250 },
+        { fps: 10, qrbox: 300 },
         qrCodeSuccessCallback
       );
     }
@@ -84,27 +84,6 @@ export default function QrScannerPage() {
 
   const stopScan = () => {
     setScanning(false);
-  };
-
-  const handleRead = async (decodedText, decodedResult) => {
-    setData(decodedText);
-    const computerNumber = decodedText.split(" ")[0];
-    const computerLab = decodedText.split(" ")[1];
-    try {
-      const q = query(
-        collection(db, "lobbies"),
-        where("computerLab", "==", computerLab)
-      );
-      const querySnapshot = await getDocs(q);
-      if (!querySnapshot.empty) {
-        setActiveStep(1);
-      } else {
-        setErrorMessage("Computer Lab not found");
-      }
-    } catch (error) {
-      console.error("Error querying Firestore: ", error);
-      setErrorMessage("An error occurred while processing your request");
-    }
   };
 
   const handleSubmit = async () => {
@@ -181,23 +160,18 @@ export default function QrScannerPage() {
                   <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                     {scanning ? (
                       <>
-                        <div id="qr-code-reader"></div>
-                        <button
-                          className="btn btn-primary mt-3"
-                          onClick={stopScan}
-                          style={{ width: "50%" }}
-                        >
+                        <div
+                          style={{ width: "400px", height: "400px" }}
+                          id="qr-code-reader"
+                        ></div>
+                        <Button onClick={stopScan} style={{ width: "100%" }}>
                           Stop Scanning
-                        </button>
+                        </Button>
                       </>
                     ) : (
-                      <button
-                        className="btn btn-primary mt-3"
-                        onClick={startScan}
-                        style={{ width: "50%" }}
-                      >
+                      <Button onClick={startScan} style={{ width: "100%" }}>
                         Start Scanning
-                      </button>
+                      </Button>
                     )}
                   </div>
                 </div>
