@@ -111,7 +111,7 @@ function NavList() {
           Home
         </Typography>
       </Link>
-      <Link href="/user/user_profile">
+      <Link href="/admin/">
         <Typography
           as="li"
           variant="small"

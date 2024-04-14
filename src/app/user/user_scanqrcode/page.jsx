@@ -49,7 +49,6 @@ export default function QrScannerPage() {
           const querySnapshot = await getDocs(q);
           if (!querySnapshot.empty) {
             setActiveStep(1);
-            set;
           } else {
             setErrorMessage("Computer Lab not found");
           }
@@ -121,7 +120,6 @@ export default function QrScannerPage() {
       hours = hours % 12;
       hours = hours ? hours : 12;
       const formattedTime = `${hours}:${minutes} ${ampm}`;
-
       const endsessionquery = query(
         collection(db, "studententries"),
         where("ccaEmail", "==", formData.ccaEmail)
