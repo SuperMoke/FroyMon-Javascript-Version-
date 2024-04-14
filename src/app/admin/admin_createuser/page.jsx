@@ -61,7 +61,7 @@ export default function Admin_CreateUser() {
           <NavbarComponent />
           <div className="flex flex-col items-center h-[calc(100vh-64px)] bg-blue-gray-50 pt-16">
             <Typography variant="h2" className="mb-4 text-center">
-              Admin Generate User
+              Admin Create User
             </Typography>
             <Card className="w-96 p-8">
               <form

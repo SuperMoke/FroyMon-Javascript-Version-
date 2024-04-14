@@ -68,13 +68,32 @@ function NavListMenu() {
                     color="blue-gray"
                     className="flex items-center text-sm font-bold"
                   >
+                    Create
+                  </Typography>
+                  <Typography
+                    variant="paragraph"
+                    className="text-xs !font-medium text-blue-gray-500"
+                  >
+                    Create User Account
+                  </Typography>
+                </div>
+              </MenuItem>
+            </Link>
+            <Link href="/admin/admin_generateqr">
+              <MenuItem className="flex items-center gap-3 rounded-lg">
+                <div>
+                  <Typography
+                    variant="h6"
+                    color="blue-gray"
+                    className="flex items-center text-sm font-bold"
+                  >
                     Generate
                   </Typography>
                   <Typography
                     variant="paragraph"
                     className="text-xs !font-medium text-blue-gray-500"
                   >
-                    Generate User Account
+                    Generate QR Code
                   </Typography>
                 </div>
               </MenuItem>
@@ -111,7 +130,7 @@ function NavList() {
           Home
         </Typography>
       </Link>
-      <Link href="/admin/">
+      <Link href="/admin/admin_profile">
         <Typography
           as="li"
           variant="small"
