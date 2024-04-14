@@ -38,6 +38,7 @@ export default function QrScannerPage() {
     let html5QrCode;
     if (scanning) {
       const qrCodeSuccessCallback = async (decodedText) => {
+        setData(decodedText);
         const computerNumber = decodedText.split(" ")[0];
         const computerLab = decodedText.split(" ")[1];
         try {
@@ -48,6 +49,7 @@ export default function QrScannerPage() {
           const querySnapshot = await getDocs(q);
           if (!querySnapshot.empty) {
             setActiveStep(1);
+            set;
           } else {
             setErrorMessage("Computer Lab not found");
           }
