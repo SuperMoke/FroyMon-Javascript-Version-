@@ -119,10 +119,18 @@ export default function QrScannerPage() {
       hours = hours % 12;
       hours = hours ? hours : 12;
       const formattedTime = `${hours}:${minutes} ${ampm}`;
-      await addDoc(collection(db, "studententries"), {
-        ...formData,
-        timeOut: formattedTime,
-      });
+
+      const endsessionquery = query(
+        collection(db, "studententries"),
+        where("ccaEmail", "==", formData.ccaEmail)
+      );
+      const querySnapshot = await getDocs(endsessionquery);
+      if (!querySnapshot.empty) {
+        const docRef = querySnapshot.docs[0].ref;
+        await updateDoc(docRef, {
+          timeOut: formattedTime,
+        });
+      }
       router.push("/user");
     } catch (error) {
       console.error("Error adding document: ", error);

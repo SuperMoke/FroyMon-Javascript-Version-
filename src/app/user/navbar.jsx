@@ -82,14 +82,11 @@ export default function NavbarComponent() {
             height={50}
             alt="Logo Picture"
           />
-          <Typography
-            as="a"
-            href="#"
-            variant="h5"
-            className="ml-2 cursor-pointer py-1.5"
-          >
-            FroyMon
-          </Typography>
+          <Link href="/user">
+            <Typography variant="h5" className="ml-2 cursor-pointer py-1.5">
+              FroyMon
+            </Typography>
+          </Link>
         </div>
 
         <div className="hidden lg:block">

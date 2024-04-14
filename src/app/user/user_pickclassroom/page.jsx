@@ -11,7 +11,14 @@ import {
   Select,
   Option,
 } from "@material-tailwind/react";
-import { collection, query, getDocs, where, addDoc } from "firebase/firestore";
+import {
+  collection,
+  query,
+  getDocs,
+  where,
+  addDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../../firebase";
 import { useState, useEffect } from "react";
 import Image from "next/image";
@@ -113,10 +120,18 @@ export default function PickClassroom() {
       hours = hours % 12;
       hours = hours ? hours : 12;
       const formattedTime = `${hours}:${minutes} ${ampm}`;
-      await addDoc(collection(db, "studententries"), {
-        ...formData,
-        timeOut: formattedTime,
-      });
+
+      const endsessionquery = query(
+        collection(db, "studententries"),
+        where("ccaEmail", "==", formData.ccaEmail)
+      );
+      const querySnapshot = await getDocs(endsessionquery);
+      if (!querySnapshot.empty) {
+        const docRef = querySnapshot.docs[0].ref;
+        await updateDoc(docRef, {
+          timeOut: formattedTime,
+        });
+      }
       router.push("/user");
     } catch (error) {
       console.error("Error adding document: ", error);
@@ -153,11 +168,11 @@ export default function PickClassroom() {
                           className="p-4 cursor-pointer hover:shadow-lg transition duration-300"
                           onClick={() => handleCardClick(classroom.computerLab)}
                         >
-                          <h3 className="text-xl font-semibold mb-2">
-                            {classroom.name}
+                          <h3 className="font-semibold mb-2">
+                            Teacher: {classroom.name}
                           </h3>
-                          <p className="text-xl text-gray-600">
-                            {classroom.computerLab}
+                          <p className="font-semibold mb-2">
+                            Computer Lab: {classroom.computerLab}
                           </p>
                         </Card>
                       ))

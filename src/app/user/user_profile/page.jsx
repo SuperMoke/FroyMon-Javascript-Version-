@@ -137,10 +137,10 @@ export default function UserProfile() {
           <Typography variant="h2" className="mb-4 text-center">
             User Profile
           </Typography>
-          <div className="flex space-x-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Card className="w-96 p-8">
               <div className="flex justify-center mb-6">
-                {profileUrl ? ( // Render the uploaded image if URL is available
+                {profileUrl ? (
                   <Image
                     src={profileUrl}
                     width={200}

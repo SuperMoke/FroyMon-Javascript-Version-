@@ -23,14 +23,16 @@ export default function TeacherPage() {
               Generate Virtual Lobby
             </Button>
           </Link>
-          <Button
-            variant="gradient"
-            color="purple"
-            size="lg"
-            className="px-6 py-3"
-          >
-            View Attendance Form
-          </Button>
+          <Link href="teacher/teacher_viewattendance">
+            <Button
+              variant="gradient"
+              color="purple"
+              size="lg"
+              className="px-6 py-3"
+            >
+              View Attendance Form
+            </Button>
+          </Link>
         </div>
       </div>
     </div>

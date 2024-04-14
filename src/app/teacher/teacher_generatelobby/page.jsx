@@ -16,10 +16,12 @@ import {
   query,
   onSnapshot,
   where,
+  getFirestore,
 } from "firebase/firestore";
-import { db } from "../../firebase";
+import { auth, db } from "../../firebase";
 import { useRecoilState } from "recoil";
 import { ComputerLabState } from "../../atoms";
+import Image from "next/image";
 
 function generateRandomPin() {
   return Math.floor(100000 + Math.random() * 900000);
@@ -27,6 +29,7 @@ function generateRandomPin() {
 
 export default function Generatelobby() {
   const [students, setStudents] = useState([]);
+  const [profileUrls, setProfileUrls] = useState({});
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -80,6 +83,18 @@ export default function Generatelobby() {
       studentsData.push(doc.data());
     });
     setStudents(studentsData);
+    const emailList = studentsData.map((student) => student.ccaEmail);
+    const userQuery = query(
+      collection(db, "user"),
+      where("email", "==", emailList)
+    );
+    const userSnapshot = await getDocs(userQuery);
+    const profileUrlsData = {};
+    userSnapshot.forEach((doc) => {
+      const userData = doc.data();
+      profileUrlsData[userData.email] = userData.profileUrl;
+    });
+    setProfileUrls(profileUrlsData);
   };
 
   const saveFormDataToFirestore = async () => {
@@ -217,7 +232,15 @@ export default function Generatelobby() {
                       key={index}
                       className="text-center flex items-center mb-4 mr-4"
                     >
-                      <Avatar></Avatar>
+                      {profileUrls[student.ccaEmail] ? (
+                        <Image
+                          src={profileUrls[student.ccaEmail]}
+                          width={50}
+                          height={50}
+                        />
+                      ) : (
+                        <Image src="/Avatar.jpg" width={50} height={50} />
+                      )}
                       <div className="mr-5 ml-5">
                         <h2 className="tracking-tight text-gray-900 dark:text-white">
                           Name: {student.studentName}
