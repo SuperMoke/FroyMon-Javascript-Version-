@@ -18,6 +18,7 @@ import {
   where,
   addDoc,
   updateDoc,
+  onSnapshot,
 } from "firebase/firestore";
 import { db } from "../../firebase";
 import { useState, useEffect } from "react";
@@ -43,21 +44,30 @@ export default function PickClassroom() {
   const router = useRouter();
 
   useEffect(() => {
-    const fetchClassrooms = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "lobbies"));
+    let unsubscribe = listenForClassroomUpdates();
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, []);
+
+  const listenForClassroomUpdates = () => {
+    const unsubscribe = onSnapshot(
+      collection(db, "lobbies"),
+      (querySnapshot) => {
         const classroomData = [];
         querySnapshot.forEach((doc) => {
           const data = doc.data();
           classroomData.push(data);
         });
         setClassrooms(classroomData);
-      } catch (error) {
-        console.error("Error fetching classrooms: ", error);
       }
-    };
-    fetchClassrooms();
-  }, []);
+    );
+
+    return unsubscribe;
+  };
 
   const handleCardClick = (computerLab) => {
     setSelectedLab(computerLab);
@@ -92,15 +102,21 @@ export default function PickClassroom() {
     setFormData({ ...formData, [key]: value });
   };
 
+  const formatTime = (hours, minutes) => {
+    const ampm = hours >= 12 ? "PM" : "AM";
+    let formattedHours = hours % 12;
+    formattedHours = formattedHours ? formattedHours : 12; // Handle 0 as 12 AM
+    const formattedMinutes = minutes.toString().padStart(2, "0"); // Ensure minutes have leading zero if needed
+    return `${formattedHours}:${formattedMinutes} ${ampm}`;
+  };
+
   const handleSubmit = async () => {
     try {
       const currentTime = new Date();
-      let hours = currentTime.getHours();
+      const hours = currentTime.getHours();
       const minutes = currentTime.getMinutes();
-      const ampm = hours >= 12 ? "PM" : "AM";
-      hours = hours % 12;
-      hours = hours ? hours : 12;
-      const formattedTime = `${hours}:${minutes} ${ampm}`;
+      const formattedTime = formatTime(hours, minutes);
+
       await addDoc(collection(db, "studententries"), {
         ...formData,
         timeIn: formattedTime,
@@ -114,12 +130,9 @@ export default function PickClassroom() {
   const handleEndSession = async () => {
     try {
       const currentTime = new Date();
-      let hours = currentTime.getHours();
+      const hours = currentTime.getHours();
       const minutes = currentTime.getMinutes();
-      const ampm = hours >= 12 ? "PM" : "AM";
-      hours = hours % 12;
-      hours = hours ? hours : 12;
-      const formattedTime = `${hours}:${minutes} ${ampm}`;
+      const formattedTime = formatTime(hours, minutes);
 
       const endsessionquery = query(
         collection(db, "studententries"),
@@ -177,9 +190,11 @@ export default function PickClassroom() {
                         </Card>
                       ))
                     ) : (
-                      <p className="text-center text-gray-600">
-                        There are no lobbies available.
-                      </p>
+                      <div className="flex justify-center items-center col-span-full">
+                        <p className="text-gray-600">
+                          There are no lobbies available.
+                        </p>
+                      </div>
                     )}
                   </div>
                 </Card>
@@ -263,7 +278,7 @@ export default function PickClassroom() {
                       <Option value="CLAB4">Computer Laboratory 4</Option>
                       <Option value="CLAB5">Computer Laboratory 5</Option>
                       <Option value="CLAB6">Computer Laboratory 6</Option>
-                      <Option value="CiscoLab">CISCO Laboratory</Option>
+                      <Option value="CiscoLab">Cisco Laboratory</Option>
                       <Option value="AccountingLab">
                         Accounting Laboratory
                       </Option>

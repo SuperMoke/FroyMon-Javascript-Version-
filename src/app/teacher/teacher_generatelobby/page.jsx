@@ -22,6 +22,7 @@ import { auth, db } from "../../firebase";
 import { useRecoilState } from "recoil";
 import { ComputerLabState } from "../../atoms";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 function generateRandomPin() {
   return Math.floor(100000 + Math.random() * 900000);
@@ -38,6 +39,7 @@ export default function Generatelobby() {
   });
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [pin, setPin] = useState(null);
+  const router = useRouter();
 
   const [computerLab, setComputerLab] = useRecoilState(ComputerLabState);
 
@@ -68,34 +70,40 @@ export default function Generatelobby() {
       }
       const storedPin = localStorage.getItem("pin");
       setPin(storedPin);
-      fetchData();
+
+      // Subscribe to changes in computerLab
+      const unsubscribe = onSnapshot(
+        query(
+          collection(db, "studententries"),
+          where("computerLab", "==", storedComputerLab)
+        ),
+        (snapshot) => {
+          const studentsData = [];
+          const emailList = [];
+          snapshot.forEach((doc) => {
+            const data = doc.data();
+            studentsData.push(data);
+            emailList.push(data.ccaEmail);
+          });
+          setStudents(studentsData);
+          const userQuery = query(
+            collection(db, "user"),
+            where("email", "in", emailList)
+          );
+          getDocs(userQuery).then((userSnapshot) => {
+            const profileUrlsData = {};
+            userSnapshot.forEach((doc) => {
+              const userData = doc.data();
+              profileUrlsData[userData.email] = userData.profileUrl;
+            });
+            setProfileUrls(profileUrlsData);
+          });
+        }
+      );
+
+      return () => unsubscribe(); // Cleanup the listener when component unmounts
     }
   }, [computerLab]);
-
-  const fetchData = async () => {
-    const studentsData = [];
-    const q = query(
-      collection(db, "studententries"),
-      where("computerLab", "==", computerLab)
-    );
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      studentsData.push(doc.data());
-    });
-    setStudents(studentsData);
-    const emailList = studentsData.map((student) => student.ccaEmail);
-    const userQuery = query(
-      collection(db, "user"),
-      where("email", "==", emailList)
-    );
-    const userSnapshot = await getDocs(userQuery);
-    const profileUrlsData = {};
-    userSnapshot.forEach((doc) => {
-      const userData = doc.data();
-      profileUrlsData[userData.email] = userData.profileUrl;
-    });
-    setProfileUrls(profileUrlsData);
-  };
 
   const saveFormDataToFirestore = async () => {
     const pin = generateRandomPin();
@@ -131,6 +139,7 @@ export default function Generatelobby() {
     setFormSubmitted(false);
     setPin(null);
     setComputerLab("");
+    router.push("/teacher");
   };
 
   return (
