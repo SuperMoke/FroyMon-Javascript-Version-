@@ -120,7 +120,7 @@ function NavList() {
 
   return (
     <ul className="my-2 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
-      <Link href="/user">
+      <Link href="/admin">
         <Typography
           as="li"
           variant="small"

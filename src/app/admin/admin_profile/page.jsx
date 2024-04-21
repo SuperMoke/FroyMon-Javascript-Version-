@@ -163,7 +163,7 @@ export default function AdminProfile() {
                 <Button onClick={handleUpload}>Upload Profile Photo</Button>
               </div>
               <Typography color="gray" className="font-normal mt-2 mb-2">
-                Student Name:
+                Admin Name:
               </Typography>
               <Typography color="gray" className="font-bold mb-4">
                 {name}
