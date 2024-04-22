@@ -8,7 +8,13 @@ import {
   where,
   getDocs,
 } from "firebase/firestore";
-import { Button, Card, Input, Typography } from "@material-tailwind/react";
+import {
+  Button,
+  Card,
+  Input,
+  Typography,
+  Spinner,
+} from "@material-tailwind/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { auth } from "../firebase";
@@ -16,10 +22,12 @@ import { auth } from "../firebase";
 export default function SigninPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleSignIn = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     const auth = getAuth();
     try {
       await signInWithEmailAndPassword(auth, email, password);
@@ -48,6 +56,8 @@ export default function SigninPage() {
       }
     } catch (error) {
       console.error("Error signing in:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -85,9 +95,15 @@ export default function SigninPage() {
               required
             />
           </div>
-          <Button type="submit" fullWidth>
-            Sign In
-          </Button>
+          <div className="flex justify-center">
+            {isLoading ? (
+              <Spinner color="black" size="lg" /> // Increase the size of the spinner
+            ) : (
+              <Button type="submit" color="black" fullWidth>
+                Sign In
+              </Button>
+            )}
+          </div>
         </form>
       </Card>
     </div>

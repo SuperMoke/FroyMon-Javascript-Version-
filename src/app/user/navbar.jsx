@@ -15,6 +15,7 @@ import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { auth } from "../firebase";
+import Cookies from "js-cookie";
 
 function NavList() {
   const router = useRouter();
@@ -22,6 +23,7 @@ function NavList() {
     signOut(auth)
       .then(() => {
         console.log("User signed out");
+        Cookies.remove("user", true);
         router.push("/"); // Redirect to the home page after logout
       })
       .catch((error) => {

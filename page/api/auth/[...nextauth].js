@@ -1,10 +1,13 @@
+// pages/api/auth/[...nextauth].js
+
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/app/firebase";
+import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
+import { auth } from "../../../src/app/firebase";
+import { redirect } from "next/dist/server/api-utils";
 
 export const authOptions = {
-  // Configure one or more authentication providers
   pages: {
     signIn: "/signin",
   },
@@ -13,25 +16,49 @@ export const authOptions = {
       name: "Credentials",
       credentials: {},
       async authorize(credentials) {
-        return await signInWithEmailAndPassword(
-          auth,
-          credentials.email || "",
-          credentials.password || ""
-        )
-          .then((userCredential) => {
-            if (userCredential.user) {
-              return userCredential.user;
+        try {
+          const userCredential = await signInWithEmailAndPassword(
+            auth,
+            credentials.email || "",
+            credentials.password || ""
+          );
+          if (userCredential.user) {
+            const db = getFirestore();
+            const userQuery = query(collection(db, "user"), where("email", "==", credentials.email));
+            const querySnapshot = await getDocs(userQuery);
+            if (!querySnapshot.empty) {
+              const userData = querySnapshot.docs[0].data();
+              return { ...userData, email: credentials.email };
             }
-            return null;
-          })
-          .catch((error) => console.log(error))
-          .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            console.log(error);
-          });
+          }
+        } catch (error) {
+          console.error("Error signing in:", error);
+          return null;
+        }
       },
     }),
   ],
+  callbacks: {
+    async session(session, user) {
+      session.user.roles = user.roles;
+      return session;
+    },
+    async redirect(url, baseUrl) {
+      if(url.startWith(baseUrl)){
+        const {roles} = uri;
+        if(roles.includes('teacher')){
+          return '/teacher'
+        }
+        if(roles.includes('student')){
+          return '/user'
+        }
+        if(roles.includes('admin')){
+          return '/admin'
+        }
+      }
+      return baseUrl;
+    }
+  },
 };
+
 export default NextAuth(authOptions);
