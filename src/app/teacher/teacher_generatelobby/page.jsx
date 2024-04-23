@@ -23,6 +23,7 @@ import { useRecoilState } from "recoil";
 import { ComputerLabState } from "../../atoms";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { isAuthenticated } from "../../utils/auth";
 
 function generateRandomPin() {
   return Math.floor(100000 + Math.random() * 900000);
@@ -50,6 +51,19 @@ export default function Generatelobby() {
       [name]: value,
     }));
   };
+
+  const [isAuthorized, setIsAuthorized] = useState(false);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const authorized = await isAuthenticated("teacher");
+      setIsAuthorized(authorized);
+      if (!authorized) {
+        router.push("/");
+      }
+    };
+    checkAuth();
+  }, [router]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -142,7 +156,7 @@ export default function Generatelobby() {
     router.push("/teacher");
   };
 
-  return (
+  return isAuthorized ? (
     <>
       <div className="bg-blue-gray-50 min-h-screen">
         <NavbarComponent />
@@ -267,5 +281,5 @@ export default function Generatelobby() {
         </div>
       </div>
     </>
-  );
+  ) : null;
 }

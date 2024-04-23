@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import NavbarComponent from "../navbar";
 import {
   Avatar,
@@ -12,6 +12,8 @@ import {
 } from "@material-tailwind/react";
 import { QRCode } from "react-qr-code";
 import html2canvas from "html2canvas";
+import { useRouter } from "next/navigation";
+import { isAuthenticated } from "../../utils/auth";
 
 export default function Admin_GenerateQR() {
   const [computerNumber, setComputerNumber] = useState("");
@@ -19,6 +21,20 @@ export default function Admin_GenerateQR() {
   const [qrCodeValue, setQrCodeValue] = useState("");
 
   const qrCodeRef = useRef(null);
+
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const authorized = await isAuthenticated("admin");
+      setIsAuthorized(authorized);
+      if (!authorized) {
+        router.push("/");
+      }
+    };
+    checkAuth();
+  }, [router]);
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -48,7 +64,7 @@ export default function Admin_GenerateQR() {
     });
   };
 
-  return (
+  return isAuthorized ? (
     <>
       <div className="bg-blue-gray-50 min-h-screen">
         <NavbarComponent />
@@ -107,5 +123,5 @@ export default function Admin_GenerateQR() {
         </div>
       </div>
     </>
-  );
+  ) : null;
 }

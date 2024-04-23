@@ -10,6 +10,8 @@ import {
 } from "@material-tailwind/react";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase";
+import { useRouter } from "next/navigation";
+import { isAuthenticated } from "../utils/auth";
 
 export default function AdminPage() {
   const [statusCounts, setStatusCounts] = useState({
@@ -20,6 +22,19 @@ export default function AdminPage() {
   });
   const [selectedLab, setSelectedLab] = useState("");
   const [labEntries, setLabEntries] = useState([]);
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const authorized = await isAuthenticated("admin");
+      setIsAuthorized(authorized);
+      if (!authorized) {
+        router.push("/");
+      }
+    };
+    checkAuth();
+  }, [router]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -70,7 +85,7 @@ export default function AdminPage() {
     }
   };
 
-  return (
+  return isAuthorized ? (
     <div className="bg-blue-gray-50 min-h-screen">
       <NavbarComponent />
       <div className="flex flex-col items-center h-[calc(100vh-64px)] bg-blue-gray-50 pt-5">
@@ -177,5 +192,5 @@ export default function AdminPage() {
         </div>
       </div>
     </div>
-  );
+  ) : null;
 }

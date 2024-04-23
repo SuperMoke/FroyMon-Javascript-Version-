@@ -4,6 +4,8 @@ import NavbarComponent from "../navbar";
 import { Card, Typography } from "@material-tailwind/react";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { db } from "../../firebase";
+import { useRouter } from "next/navigation";
+import { isAuthenticated } from "../../utils/auth";
 
 export default function ViewAttendance() {
   const TABLE_HEAD = [
@@ -28,6 +30,20 @@ export default function ViewAttendance() {
     return "";
   });
 
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const authorized = await isAuthenticated("teacher");
+      setIsAuthorized(authorized);
+      if (!authorized) {
+        router.push("/");
+      }
+    };
+    checkAuth();
+  }, [router]);
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       return localStorage.setItem("computerLab", computerLab);
@@ -50,7 +66,7 @@ export default function ViewAttendance() {
     return () => unsubscribe();
   }, [computerLab]);
 
-  return (
+  return isAuthorized ? (
     <>
       <div className="bg-blue-gray-50 min-h-screen">
         <NavbarComponent />
@@ -143,5 +159,5 @@ export default function ViewAttendance() {
         </div>
       </div>
     </>
-  );
+  ) : null;
 }

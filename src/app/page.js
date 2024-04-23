@@ -1,6 +1,8 @@
 "use client"
 import React from "react";
 import { useRouter } from "next/navigation";
+import { Spinner } from "@material-tailwind/react";
+import Image from "next/image";
 
 export default function Home() {
   const router = useRouter();
@@ -29,6 +31,16 @@ export default function Home() {
   }, [session, router]);
 
   if (session === null) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex flex-col justify-center items-center h-screen">
+        <Image
+          src="/froymon_logo.png"
+          width={200}
+          height={200}
+          alt="Logo Picture"
+        />
+        <Spinner className="mt-5 h-12 w-12" />
+      </div>
+    );
   }
 }

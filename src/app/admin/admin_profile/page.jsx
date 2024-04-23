@@ -26,6 +26,8 @@ import {
   signInWithEmailAndPassword,
   updatePassword,
 } from "firebase/auth";
+import { useRouter } from "next/navigation";
+import { isAuthenticated } from "../../utils/auth";
 
 export default function AdminProfile() {
   const [name, setName] = useState("");
@@ -35,6 +37,19 @@ export default function AdminProfile() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const authorized = await isAuthenticated("admin");
+      setIsAuthorized(authorized);
+      if (!authorized) {
+        router.push("/");
+      }
+    };
+    checkAuth();
+  }, [router]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -129,7 +144,7 @@ export default function AdminProfile() {
     }
   };
 
-  return (
+  return isAuthorized ? (
     <>
       <div className="bg-blue-gray-50 min-h-screen">
         <NavbarComponent />
@@ -217,5 +232,5 @@ export default function AdminProfile() {
         </div>
       </div>
     </>
-  );
+  ) : null;
 }

@@ -18,6 +18,8 @@ import Image from "next/image";
 import { addDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../firebase";
 import { Html5Qrcode } from "html5-qrcode";
+import { isAuthenticated } from "../../utils/auth";
+import { useRouter } from "next/navigation";
 
 export default function QrScannerPage() {
   const [data, setData] = useState("No result");
@@ -33,6 +35,19 @@ export default function QrScannerPage() {
     computerStatus: "",
   });
   const [errorMessage, setErrorMessage] = useState("");
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const authorized = await isAuthenticated("student");
+      setIsAuthorized(authorized);
+      if (!authorized) {
+        router.push("/");
+      }
+    };
+    checkAuth();
+  }, [router]);
 
   useEffect(() => {
     let html5QrCode;
@@ -137,7 +152,7 @@ export default function QrScannerPage() {
     }
   };
 
-  return (
+  return isAuthorized ? (
     <>
       <div className="bg-blue-gray-50 min-h-screen">
         <NavbarComponent />
@@ -286,5 +301,5 @@ export default function QrScannerPage() {
         </div>
       </div>
     </>
-  );
+  ) : null;
 }

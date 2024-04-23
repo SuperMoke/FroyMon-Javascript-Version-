@@ -1,11 +1,27 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import NavbarComponent from "./navbar";
 import { Button, Typography } from "@material-tailwind/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { isAuthenticated } from "../utils/auth";
 
 export default function TeacherPage() {
-  return (
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const authorized = await isAuthenticated("teacher");
+      setIsAuthorized(authorized);
+      if (!authorized) {
+        router.push("/");
+      }
+    };
+    checkAuth();
+  }, [router]);
+
+  return isAuthorized ? (
     <div className="bg-blue-gray-50 min-h-screen">
       <NavbarComponent />
       <div className="flex flex-col items-center mt-10 h-[calc(100vh-64px)] bg-blue-gray-50 pt-16">
@@ -36,5 +52,5 @@ export default function TeacherPage() {
         </div>
       </div>
     </div>
-  );
+  ) : null;
 }

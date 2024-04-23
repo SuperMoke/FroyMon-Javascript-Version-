@@ -18,6 +18,7 @@ import {
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { auth } from "../firebase";
+import { isAuthenticated } from "../utils/auth";
 
 export default function SigninPage() {
   const [email, setEmail] = useState("");
@@ -31,31 +32,24 @@ export default function SigninPage() {
     const auth = getAuth();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      const db = getFirestore();
-      const userQuery = query(
-        collection(db, "user"),
-        where("email", "==", email)
-      );
-      const querySnapshot = await getDocs(userQuery);
-      if (!querySnapshot.empty) {
-        querySnapshot.forEach((doc) => {
-          const userData = doc.data();
-          const role = userData.role;
-          if (role === "student") {
-            router.push("/user");
-          } else if (role === "teacher") {
-            router.push("/teacher");
-          } else if (role === "admin") {
-            router.push("/admin");
-          } else {
-            console.error("Unknown role:", role);
-          }
-        });
-      } else {
-        console.error("User not found or role not specified");
+      const roleMap = {
+        student: "/user",
+        teacher: "/teacher",
+        admin: "/admin",
+      };
+      for (const role of Object.keys(roleMap)) {
+        const hasRole = await isAuthenticated(role);
+        if (hasRole) {
+          router.push(roleMap[role]);
+          return;
+        }
       }
+      console.error("User does not have a valid role");
+      // Handle the case where none of the roles match
     } catch (error) {
       console.error("Error signing in:", error);
+      // Handle authentication errors
+      // ...
     } finally {
       setIsLoading(false);
     }

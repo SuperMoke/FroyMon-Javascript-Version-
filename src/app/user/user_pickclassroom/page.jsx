@@ -24,6 +24,7 @@ import { db } from "../../firebase";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { isAuthenticated } from "../../utils/auth";
 
 export default function PickClassroom() {
   const [classrooms, setClassrooms] = useState([]);
@@ -41,7 +42,19 @@ export default function PickClassroom() {
     computerNumber: "",
     computerStatus: "",
   });
+  const [isAuthorized, setIsAuthorized] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const authorized = await isAuthenticated("student");
+      setIsAuthorized(authorized);
+      if (!authorized) {
+        router.push("/");
+      }
+    };
+    checkAuth();
+  }, [router]);
 
   useEffect(() => {
     let unsubscribe = listenForClassroomUpdates();
@@ -151,7 +164,7 @@ export default function PickClassroom() {
     }
   };
 
-  return (
+  return isAuthorized ? (
     <>
       <div className="bg-blue-gray-50 min-h-screen">
         <NavbarComponent />
@@ -355,5 +368,5 @@ export default function PickClassroom() {
         </div>
       </div>
     </>
-  );
+  ) : null;
 }
