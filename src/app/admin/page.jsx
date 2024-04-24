@@ -159,12 +159,12 @@ export default function AdminPage() {
               <Option value="CLAB4">Computer Laboratory 4</Option>
               <Option value="CLAB5">Computer Laboratory 5</Option>
               <Option value="CLAB6">Computer Laboratory 6</Option>
-              <Option value="Computer is Full Functional">
-                CISCO Laboratory
+              <Option value="CiscoLab">CISCO Laboratory</Option>
+              <Option value="AccountingLab">Accounting Laboratory</Option>
+              <Option value="HardwareLab">Hardware Laboratory</Option>
+              <Option value="ContactCenterLab">
+                Contact Center Laboratory
               </Option>
-              <Option value="ALAB">Accounting Laboratory</Option>
-              <Option value="HLAB">Hardware Laboratory</Option>
-              <Option value="CCLAB">Contact Center Laboratory</Option>
             </Select>
           </div>
         </div>

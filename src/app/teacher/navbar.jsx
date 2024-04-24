@@ -113,7 +113,7 @@ function NavList() {
     signOut(auth)
       .then(() => {
         console.log("User signed out");
-        router.push("/"); // Redirect to the home page after logout
+        router.push("/"); 
       })
       .catch((error) => {
         console.error("Error signing out:", error);

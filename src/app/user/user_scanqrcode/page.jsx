@@ -259,8 +259,8 @@ export default function QrScannerPage() {
                       <Option value="Hardware Issues">Hardware Issues</Option>
                       <Option value="Software Issues">Software Issues</Option>
                       <Option value="Network Problems">Network Problems</Option>
-                      <Option value="Computer is Full Functional">
-                        Computer is Full Functional
+                      <Option value="Computer is Working">
+                        Computer is Fully Functional
                       </Option>
                     </Select>
                     <Button className="mt-3" onClick={handleSubmit}>

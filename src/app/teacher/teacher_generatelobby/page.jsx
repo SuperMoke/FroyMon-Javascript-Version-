@@ -85,7 +85,6 @@ export default function Generatelobby() {
       const storedPin = localStorage.getItem("pin");
       setPin(storedPin);
 
-      // Subscribe to changes in computerLab
       const unsubscribe = onSnapshot(
         query(
           collection(db, "studententries"),
@@ -115,7 +114,7 @@ export default function Generatelobby() {
         }
       );
 
-      return () => unsubscribe(); // Cleanup the listener when component unmounts
+      return () => unsubscribe();
     }
   }, [computerLab]);
 
