@@ -326,7 +326,7 @@ export default function PickClassroom() {
                       <Option value="Hardware Issues">Hardware Issues</Option>
                       <Option value="Software Issues">Software Issues</Option>
                       <Option value="Network Problems">Network Problems</Option>
-                      <Option value="Computer is Working">
+                      <Option value="Computer is Full Functional">
                         Computer is Fully Functional
                       </Option>
                     </Select>
