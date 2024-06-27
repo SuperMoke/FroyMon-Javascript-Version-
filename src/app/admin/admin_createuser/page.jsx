@@ -84,11 +84,11 @@ export default function Admin_CreateUser() {
                 onSubmit={handleFormSubmit}
               >
                 <Typography color="gray" className="font-normal mt-2 mb-2">
-                  Student Name:
+                  Name:
                 </Typography>
                 <Input
                   type="text"
-                  label="Enter The Student Name"
+                  label="Enter The Name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
